@@ -1,8 +1,9 @@
+/*
 package ejercicosClase.controller;
 
 import com.example.demo.dto.UserClassResponse;
 import com.example.demo.dto.UserclassRequest;
-import com.example.demo.service.UserclassService;
+import com.example.demo.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,8 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/userclass")
 public class UserclassController {
-    private final UserclassService service;
-    public UserclassController(UserclassService service){
+    private final UsuarioService service;
+    public UserclassController(UsuarioService service){
         this.service=service;
     }
 
@@ -42,3 +43,4 @@ public class UserclassController {
 
 
 }
+*/

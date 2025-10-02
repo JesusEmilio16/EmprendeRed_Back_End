@@ -1,9 +1,10 @@
+/*
 package ejercicosClase.service;
 
 import com.example.demo.dto.UserClassResponse;
 import com.example.demo.dto.UserclassRequest;
-import com.example.demo.model.Userclass;
-import com.example.demo.repository.UserclassRepository;
+import com.example.demo.model.Usuario;
+import com.example.demo.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,20 +13,20 @@ import java.util.stream.Collectors;
 @Service
 public class UserclassService {
 
-    private final UserclassRepository repository;
+    private final UsuarioRepository repository;
 
-    public UserclassService(UserclassRepository repository) {
+    public UserclassService(UsuarioRepository repository) {
         this.repository = repository;
     }
 
     //crear un nuevo usuario
     public  UserClassResponse crear(UserclassRequest request){
-        Userclass entity = new Userclass();
+        Usuario entity = new Usuario();
         entity.setNombre(request.getNombre());
         entity.setEmail(request.getEmail());
         entity.setTelefono(request.getTelefono());
 
-        Userclass guardado = repository.save(entity);
+        Usuario guardado = repository.save(entity);
         return new UserClassResponse(guardado.getId(),guardado.getNombre(),guardado.getEmail(),guardado.getTelefono());
     }
 
@@ -39,20 +40,20 @@ public class UserclassService {
 
     //listar por id
     public UserClassResponse buscarPorId(Long id){
-        Userclass entity = repository.findById(id)
+        Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException( "usuario no encontrado " + id));
         return new UserClassResponse(entity.getId(),entity.getNombre(),entity.getEmail(),entity.getTelefono());
     }
 
     //actualizar usuario por id
     public UserClassResponse actualizar(Long id, UserclassRequest request){
-        Userclass entity = repository.findById(id)
+        Usuario entity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException( "usuario no encontrado con id " + id));
         entity.setNombre(request.getNombre());
         entity.setEmail(request.getEmail());
         entity.setTelefono(request.getTelefono());
 
-        Userclass actualizado = repository.save(entity);
+        Usuario actualizado = repository.save(entity);
         return new UserClassResponse(actualizado.getId(),actualizado.getNombre(),actualizado.getEmail(),actualizado.getTelefono());
     }
 
@@ -64,3 +65,4 @@ public class UserclassService {
         repository.deleteById(id);
     }
 }
+*/

@@ -8,10 +8,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserClassResponse {
-    private Long id;
-    private String nombre;
+    private int idUser;
+    private String name;
+    private String middleName;
+    private String lastName;
+    private String lastName2;
     private String email;
-    private String telefono;
+    private String password;
+    private String phoneNumber;
+    private String documento;
+    private String sexo;
 }
 
 
