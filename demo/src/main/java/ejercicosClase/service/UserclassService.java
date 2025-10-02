@@ -3,7 +3,7 @@ package ejercicosClase.service;
 import com.example.demo.dto.UserClassResponse;
 import com.example.demo.dto.UserclassRequest;
 import com.example.demo.model.Usuario;
-import com.example.demo.repository.UserclassRepository;
+import com.example.demo.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserclassService {
 
-    private final UserclassRepository repository;
+    private final UsuarioRepository repository;
 
-    public UserclassService(UserclassRepository repository) {
+    public UserclassService(UsuarioRepository repository) {
         this.repository = repository;
     }
 

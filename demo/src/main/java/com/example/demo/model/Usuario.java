@@ -42,7 +42,7 @@ public class Usuario {
     // No devolver password en responses
     @Column(name = "password", nullable = false, length = 200)
     @NotBlank
-    /@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)/
+    ///@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)/
     private String password;
 
     @Column(name = "phone_number", nullable = false, length = 20)
