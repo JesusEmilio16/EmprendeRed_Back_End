@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.UserClassRequest;
+import com.example.demo.dto.UserclassRequest;
 import com.example.demo.dto.UserClassResponse;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
@@ -24,7 +24,7 @@ public class UsuarioService {
     }
 
     //crear usuario
-    public UserClassResponse create(UserClassRequest request) {
+    public UserClassResponse create(UserclassRequest request) {
         Usuario entity = new Usuario();
         entity.setName(request.getName());
         entity.setMiddleName(request.getMiddleName());
@@ -53,7 +53,7 @@ public class UsuarioService {
 
 
     //actualizar usuarios
-    public UserClassResponse update(Long idUser, UserClassRequest request) {
+    public UserClassResponse update(Long idUser, UserclassRequest request) {
         Usuario entity = repo.findById(idUser)
                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado con id"+ idUser) );
         entity.setName(request.getName());

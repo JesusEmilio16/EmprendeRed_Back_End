@@ -1,14 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.UserClassResponse;
-import com.example.demo.dto.UserClassRequest;
+import com.example.demo.dto.UserclassRequest;
 import com.example.demo.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/usuarios2")
 
 public class UsuarioController {
     private final UsuarioService service;
@@ -25,12 +25,12 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public UserClassResponse create(@RequestBody UserClassRequest request) {
+    public UserClassResponse create(@RequestBody UserclassRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public UserClassResponse update(@PathVariable Long id, @RequestBody UserClassRequest request) {
+    public UserClassResponse update(@PathVariable Long id, @RequestBody UserclassRequest request) {
         return service.update(id,request);
     }
 

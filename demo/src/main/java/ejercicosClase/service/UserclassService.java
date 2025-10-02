@@ -1,3 +1,4 @@
+/*
 package ejercicosClase.service;
 
 import com.example.demo.dto.UserClassResponse;
@@ -64,3 +65,4 @@ public class UserclassService {
         repository.deleteById(id);
     }
 }
+*/
