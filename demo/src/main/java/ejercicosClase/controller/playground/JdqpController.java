@@ -1,6 +1,7 @@
-package com.example.demo.controller.playground;
+package ejercicosClase.controller.playground;
 
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
