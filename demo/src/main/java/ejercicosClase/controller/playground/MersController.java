@@ -1,5 +1,5 @@
 
-package com.example.demo.controller.playground;
+package ejercicosClase.controller.playground;
 
 import org.springframework.web.bind.annotation.*;
 

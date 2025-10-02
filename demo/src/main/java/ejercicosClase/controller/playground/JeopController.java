@@ -1,5 +1,5 @@
 
-package com.example.demo.controller.playground;
+package ejercicosClase.controller.playground;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +19,16 @@ public class JeopController {
         return nombres;
     }
 
+    // GET- sirve para hacer get con una variable
+    //Enpoint: get/ejemplo/nombres/1
+    @GetMapping("/{index}")
+    public String getNombres(@PathVariable int index){
+        String datoFinal = nombres.get(index);
+        return "dato traido "+ datoFinal;
+    }
+
     //Post-Agregar nuevo nombre
-    //Endpoint: Post /ejemplo/nombre?nombre=jhonatan
+    //Endpoint: Post /ejemplo/nombres?nombre=jhonatan
     @PostMapping
     public String addNombres(@RequestParam String nombre){
         nombres.add(nombre);
@@ -33,7 +41,7 @@ public class JeopController {
     @PutMapping("/{index}")
     public String updateNombres(@PathVariable int index, @RequestParam String nuevo){
         nombres.set(index, nuevo);
-        return "nombre actualizado"+index+"es: "+nuevo;
+        return "nombre actualizado "+index+" es: "+nuevo;
     }
 
     //DELETE - Eliminar nombre
@@ -41,7 +49,7 @@ public class JeopController {
     @DeleteMapping("/{index}")
     public String deleteNombres(@PathVariable int index){
         String eliminado=nombres.remove(index);
-        return "nombre eliminado"+index+"es: "+eliminado;
+        return "nombre eliminado "+index+" es: "+eliminado;
     }
 
 }
