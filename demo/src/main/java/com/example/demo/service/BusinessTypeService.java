@@ -18,7 +18,7 @@ public class BusinessTypeService {
     public List<BusinessTypeResponse> lista() {
         return repo.findAll()
                 .stream()
-                .map(u -> new BusinessTypeResponse(u.getIdType(),u.getName(),u.getDescription())
+                .map(u -> new BusinessTypeResponse(Math.toIntExact(u.getIdType()),u.getName(),u.getDescription())
                 ).collect(Collectors.toList());
     }
 
@@ -30,14 +30,14 @@ public class BusinessTypeService {
 
 
         BusinessType saved = repo.save(entity);
-        return new BusinessTypeResponse(saved.getIdType(),saved.getName(), saved.getDescription());
+        return new BusinessTypeResponse(Math.toIntExact(saved.getIdType()),saved.getName(), saved.getDescription());
     }
 
     //listar por id
     public BusinessTypeResponse findById(Long idType) {
         BusinessType entity = repo.findById(idType)
                 .orElseThrow(()-> new RuntimeException("Tipo de negocio no encontrado"+ idType) );
-        return new BusinessTypeResponse(entity.getIdType(), entity.getName(), entity.getDescription());
+        return new BusinessTypeResponse(Math.toIntExact(entity.getIdType()), entity.getName(), entity.getDescription());
     }
 
 
@@ -50,7 +50,7 @@ public class BusinessTypeService {
 
 
         BusinessType saved = repo.save(entity);
-        return new BusinessTypeResponse(saved.getIdType(), saved.getName(), saved.getDescription());
+        return new BusinessTypeResponse(Math.toIntExact(saved.getIdType()), saved.getName(), saved.getDescription());
     }
 
     public void delete(Long id) {

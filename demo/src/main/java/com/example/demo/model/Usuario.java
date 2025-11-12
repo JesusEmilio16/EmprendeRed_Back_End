@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(schema = "emprenderedbd", name = "usuario")
 @Data
@@ -55,6 +57,10 @@ public class Usuario {
 
     @Column(name = "sexo", length = 1)
     private String sexo; // 'M', 'F', 'O'
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Business> businesses;
+
 
     // Getters y setters
     public Integer getIdUser() { return idUser; }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/BusinessType")
+@CrossOrigin(origins = "http://localhost:4200")
 
 public class BusinessTypeController {
     private final BusinessTypeService service;
@@ -28,7 +29,6 @@ public class BusinessTypeController {
     public BusinessTypeResponse create(@RequestBody BusinessTypeRequest request) {
         return service.create(request);
     }
-
     @PutMapping("/{id}")
     public BusinessTypeResponse update(@PathVariable Long id, @RequestBody BusinessTypeRequest request) {
         return service.update(id,request);
