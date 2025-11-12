@@ -2,11 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserClassResponse;
 import com.example.demo.dto.UserclassRequest;
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/usuarios2")
 
@@ -20,7 +21,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public UserClassResponse getById(@PathVariable Long id) {
+    public UserClassResponse getById(@PathVariable Integer id) {
         return service.findById(id);
     }
 
@@ -30,12 +31,14 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public UserClassResponse update(@PathVariable Long id, @RequestBody UserclassRequest request) {
+    public UserClassResponse update(@PathVariable Integer id, @RequestBody UserclassRequest request) {
         return service.update(id,request);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
+
+
 }
