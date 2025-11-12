@@ -13,8 +13,12 @@ public class Business {
     @Column(name = "id_business")
     private Long idBusiness;
 
-    @Column(name = "nombre_usuario", nullable = false, length = 100)
-    private String nombreUsuario;
+    @ManyToOne
+    @JoinColumn(name = "id_user", nullable = false)
+    private Usuario usuario;
+
+   /* @Column(name = "nombre_usuario", nullable = false, length = 100)
+    private String nombreUsuario;*/
 
     @Column(name = "name", nullable = false, length = 150)
     private String name;
