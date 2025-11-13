@@ -13,7 +13,7 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                final String vercelDomain = "https://emprende-red-front-end.vercel.app/";
+                final String vercelDomain = "https://emprende-red-front-end.vercel.app";
                 registry.addMapping("/**")
                         /*.allowedOriginPatterns("*")*/
                         .allowedOrigins("http://localhost:4200","http://127.0.0.1:4200",vercelDomain) // origen de Angular
