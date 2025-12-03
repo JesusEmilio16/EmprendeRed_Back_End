@@ -80,10 +80,17 @@ public class BusinessController {
     // 🔴 Eliminar negocio (solo si pertenece al usuario)
     @DeleteMapping("/{id}/{userId}")
     public ResponseEntity<String> deleteBusiness(@PathVariable Long id, @PathVariable Long userId) {
-        System.out.println( "este es el negocio controller a eliminar"+id);
+        /*System.out.println( "este es el negocio controller a eliminar"+id);
         System.out.println( "este es el usuario  controller a eliminar"+userId);
         service.delete(id, userId);
         System.out.println( "este es el ususrio controller 3 a eliminar"+userId);
-        return ResponseEntity.ok("Negocio eliminado correctamente");
+        return ResponseEntity.ok("Negocio eliminado correctamente");*/
+
+        try {
+            service.delete(id, userId);
+            return ResponseEntity.ok("Negocio eliminado correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
     }
 }

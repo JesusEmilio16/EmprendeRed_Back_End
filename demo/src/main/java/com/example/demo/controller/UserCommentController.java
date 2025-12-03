@@ -3,13 +3,19 @@ package com.example.demo.controller;
 import com.example.demo.dto.UserCommentRequest;
 import com.example.demo.dto.UserCommentResponse;
 import com.example.demo.service.UserCommentService;
+import com.example.demo.service.CommentsReportService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +27,9 @@ public class UserCommentController {
 
     @Autowired
     private UserCommentService commentService;
+
+    @Autowired
+    private CommentsReportService reportService;
 
     // Obtener todos los comentarios
     @GetMapping
@@ -109,4 +118,52 @@ public class UserCommentController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    // 🆕 Exportar a Excel
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportToExcel(
+            @RequestParam(required = false) Long businessId) {
+        try {
+            ByteArrayOutputStream outputStream = reportService.generateExcelReport(businessId);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=comentarios_" +
+                    System.currentTimeMillis() + ".xlsx");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(new InputStreamResource(inputStream));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 🆕 Exportar a PDF
+    @GetMapping("/export/pdf")
+    public ResponseEntity<InputStreamResource> exportToPdf(
+            @RequestParam(required = false) Long businessId) {
+        try {
+            ByteArrayOutputStream outputStream = reportService.generatePdfReport(businessId);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=comentarios_" +
+                    System.currentTimeMillis() + ".pdf");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(inputStream));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
+
 }
