@@ -136,4 +136,12 @@ public class UserCommentService {
     public long countCommentsByBusiness(Long businessId) {
         return commentRepository.countByBusinessIdBusiness(businessId);
     }
+
+
+
+
+
+
 }
+
+
