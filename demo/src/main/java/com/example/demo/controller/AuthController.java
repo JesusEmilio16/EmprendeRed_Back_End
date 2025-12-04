@@ -3,12 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:4200")
+@Hidden
 public class AuthController {
     private final UsuarioService usuarioService;
 

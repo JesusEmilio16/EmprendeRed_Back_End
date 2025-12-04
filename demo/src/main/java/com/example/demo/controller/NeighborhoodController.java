@@ -3,13 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.dto.NeighborhoodResponse;
 import com.example.demo.dto.NeighborhoodRequest;
 import com.example.demo.service.NeighborhoodService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/Neighborhood")
-
+@Hidden
 public class NeighborhoodController {
     private final NeighborhoodService service;
     public NeighborhoodController(NeighborhoodService service) { this.service = service; }

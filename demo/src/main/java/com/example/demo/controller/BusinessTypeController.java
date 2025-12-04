@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.BusinessTypeResponse;
 import com.example.demo.dto.BusinessTypeRequest;
 import com.example.demo.service.BusinessTypeService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/BusinessType")
 @CrossOrigin(origins = "http://localhost:4200")
-
+@Hidden
 public class BusinessTypeController {
     private final BusinessTypeService service;
     public BusinessTypeController(BusinessTypeService service) { this.service = service; }
