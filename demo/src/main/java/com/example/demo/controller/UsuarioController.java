@@ -6,6 +6,10 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -40,5 +44,23 @@ public class UsuarioController {
         service.delete(id);
     }
 
+    @GetMapping("/reporte/pdf")
+    public ResponseEntity<byte[]> generarPdfUsuarios() {
+        byte[] pdf = service.generarPdfUsuarios();
 
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=usuarios.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<byte[]> exportarExcel() {
+        byte[] excel = service.exportarExcelUsuarios();
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=usuarios.xls")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(excel);
+    }
 }

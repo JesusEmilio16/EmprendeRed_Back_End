@@ -12,7 +12,20 @@ import com.example.demo.dto.LoginResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+//pdf
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 
+// Apache POI HSSF (Excel .xls)
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+
+// util IO y colecciones
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -162,5 +175,105 @@ public class UsuarioService {
         );
     }
 
+    public byte[] generarPdfUsuarios() {
+        try {
+            List<Usuario> usuarios = repo.findAll();
 
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Document document = new Document(PageSize.A4.rotate());
+            PdfWriter.getInstance(document, out);
+
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph title = new Paragraph("REPORTE DE USUARIOS", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            document.add(new Paragraph("Generado automáticamente"));
+            document.add(Chunk.NEWLINE);
+
+            PdfPTable table = new PdfPTable(9);
+            table.setWidthPercentage(100);
+
+            table.addCell("ID");
+            table.addCell("Nombre");
+            table.addCell("Segundo Nombre");
+            table.addCell("Apellido");
+            table.addCell("Apellido 2");
+            table.addCell("Email");
+            table.addCell("Teléfono");
+            table.addCell("Documento");
+            table.addCell("Sexo");
+
+            for (Usuario u : usuarios) {
+                table.addCell(String.valueOf(u.getIdUser()));
+                table.addCell(u.getName());
+                table.addCell(u.getMiddleName() != null ? u.getMiddleName() : "");
+                table.addCell(u.getLastName());
+                table.addCell(u.getLastName2() != null ? u.getLastName2() : "");
+                table.addCell(u.getEmail());
+                table.addCell(u.getPhoneNumber());
+                table.addCell(u.getDocumento());
+                table.addCell(u.getSexo() != null ? u.getSexo() : "");
+            }
+
+            document.add(table);
+            document.close();
+
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generando PDF", e);
+        }
+    }
+
+    public byte[] exportarExcelUsuarios() {
+        try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+
+            HSSFSheet sheet = workbook.createSheet("Usuarios");
+
+            // Encabezados
+            HSSFRow headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("ID");
+            headerRow.createCell(1).setCellValue("Nombre");
+            headerRow.createCell(2).setCellValue("Segundo Nombre");
+            headerRow.createCell(3).setCellValue("Apellido");
+            headerRow.createCell(4).setCellValue("Apellido 2");
+            headerRow.createCell(5).setCellValue("Email");
+            headerRow.createCell(6).setCellValue("Telefono");
+            headerRow.createCell(7).setCellValue("Documento");
+            headerRow.createCell(8).setCellValue("Sexo");
+
+            // Datos
+            List<Usuario> usuarios = repo.findAll();
+
+            int rowIndex = 1;
+            for (Usuario u : usuarios) {
+                HSSFRow row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(u.getIdUser());
+                row.createCell(1).setCellValue(u.getName());
+                row.createCell(2).setCellValue(u.getMiddleName());
+                row.createCell(3).setCellValue(u.getLastName());
+                row.createCell(4).setCellValue(u.getLastName2());
+                row.createCell(5).setCellValue(u.getEmail());
+                row.createCell(6).setCellValue(u.getPhoneNumber());
+                row.createCell(7).setCellValue(u.getDocumento());
+                row.createCell(8).setCellValue(u.getSexo());
+            }
+
+            // Ajusta el tamaño de columnas
+            for (int i = 0; i <= 8; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Convertir a bytes para descargar
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workbook.write(out);
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generando Excel: " + e.getMessage());
+        }
+    }
 }
