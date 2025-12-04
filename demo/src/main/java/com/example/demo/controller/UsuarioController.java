@@ -10,6 +10,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.InputStreamResource;
+import java.io.ByteArrayInputStream; // Necesario para recibir la respuesta del service
+import org.springframework.http.HttpStatus; // Necesario para devolver ResponseEntity<T>(HttpStatus.INTERNAL_SERVER_ERROR)
+
+import org.springframework.core.io.Resource;
+
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -54,13 +61,26 @@ public class UsuarioController {
                 .body(pdf);
     }
 
-    @GetMapping("/export/excel")
-    public ResponseEntity<byte[]> exportarExcel() {
-        byte[] excel = service.exportarExcelUsuarios();
+    @GetMapping("/reporte/excel")
+    public ResponseEntity<Resource> generarExcelUsuarios() {
+        try {
+            // Llama al servicio (ahora devuelve ByteArrayInputStream)
+            ByteArrayInputStream excelStream = service.generarExcelUsuarios();
 
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=usuarios.xls")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(excel);
+            // Envuelve el InputStream en un Resource
+            InputStreamResource file = new InputStreamResource(excelStream);
+
+            // CLAVE: Usar el Content-Type para .xlsx (Open XML)
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=usuarios.xlsx")
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(file);
+
+        } catch (Exception e) {
+            // Manejar el error de forma adecuada si es necesario
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+ // Fin de la clase
+
 }

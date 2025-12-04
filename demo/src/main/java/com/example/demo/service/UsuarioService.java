@@ -18,16 +18,47 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 
-// Apache POI HSSF (Excel .xls)
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook; // Para .xls
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 
+// 1. IMPORTS DE PDF (OpenPDF) - Quitamos el ByteArrayOutputStream duplicado de aquí si estaba.
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+
+// 2. IMPORTS DE EXCEL (Apache POI) - Específicos (Incluyendo XSSF)
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook; // <-- ¡CLAVE!
+
 // util IO y colecciones
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream; // <-- ¡NUEVO! Para que el service devuelva lo que tu compañero devuelve
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Date; // Asegúrate de tener esta importación
+import com.lowagie.text.Phrase;
+
+
+// 2. IMPORTS DE EXCEL (Apache POI) - Específicos
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+// util IO y colecciones
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -185,8 +216,8 @@ public class UsuarioService {
 
             document.open();
 
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-            Paragraph title = new Paragraph("REPORTE DE USUARIOS", titleFont);
+            com.lowagie.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Paragraph title = new Paragraph("REPORTE DE USUARIOS", (com.lowagie.text.Font) titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
@@ -228,52 +259,76 @@ public class UsuarioService {
         }
     }
 
-    public byte[] exportarExcelUsuarios() {
-        try (HSSFWorkbook workbook = new HSSFWorkbook()) {
-
-            HSSFSheet sheet = workbook.createSheet("Usuarios");
-
-            // Encabezados
-            HSSFRow headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("ID");
-            headerRow.createCell(1).setCellValue("Nombre");
-            headerRow.createCell(2).setCellValue("Segundo Nombre");
-            headerRow.createCell(3).setCellValue("Apellido");
-            headerRow.createCell(4).setCellValue("Apellido 2");
-            headerRow.createCell(5).setCellValue("Email");
-            headerRow.createCell(6).setCellValue("Telefono");
-            headerRow.createCell(7).setCellValue("Documento");
-            headerRow.createCell(8).setCellValue("Sexo");
-
-            // Datos
+    public ByteArrayInputStream generarExcelUsuarios() {
+        try {
+            // 1. Obtener la lista de usuarios
             List<Usuario> usuarios = repo.findAll();
 
-            int rowIndex = 1;
-            for (Usuario u : usuarios) {
-                HSSFRow row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(u.getIdUser());
-                row.createCell(1).setCellValue(u.getName());
-                row.createCell(2).setCellValue(u.getMiddleName());
-                row.createCell(3).setCellValue(u.getLastName());
-                row.createCell(4).setCellValue(u.getLastName2());
-                row.createCell(5).setCellValue(u.getEmail());
-                row.createCell(6).setCellValue(u.getPhoneNumber());
-                row.createCell(7).setCellValue(u.getDocumento());
-                row.createCell(8).setCellValue(u.getSexo());
-            }
+            // 2. CAMBIO: Crear un nuevo libro de trabajo de Excel (.xlsx)
+            // Usamos try-with-resources para cerrar el workbook automáticamente
+            try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                Sheet sheet = workbook.createSheet("Usuarios");
 
-            // Ajusta el tamaño de columnas
-            for (int i = 0; i <= 8; i++) {
-                sheet.autoSizeColumn(i);
-            }
+                // --- Estilos ---
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerFont.setFontHeightInPoints((short) 14);
+                headerStyle.setFont(headerFont);
 
-            // Convertir a bytes para descargar
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            workbook.write(out);
-            return out.toByteArray();
+                CellStyle columnHeaderStyle = workbook.createCellStyle();
+                Font columnHeaderFont = workbook.createFont();
+                columnHeaderFont.setBold(true);
+                columnHeaderStyle.setFont(columnHeaderFont);
+
+                // 3. Crear el encabezado del reporte (Idéntico a tu implementación original)
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("REPORTE DE USUARIOS - EMPRENDERED");
+                titleCell.setCellStyle(headerStyle);
+
+                Row dateRow = sheet.createRow(1);
+                Cell dateCell = dateRow.createCell(0);
+                dateCell.setCellValue("Fecha de Generación: " + new java.util.Date());
+
+                Row row = sheet.createRow(3);
+                String[] headers = {"ID", "Nombre", "Segundo Nombre", "Apellido", "Apellido 2", "Email", "Teléfono", "Documento", "Sexo"};
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = row.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(columnHeaderStyle);
+                }
+
+                // 4. Llenar la tabla con los datos (Idéntico a tu implementación original)
+                int rowNum = 4;
+                for (Usuario u : usuarios) {
+                    Row dataRow = sheet.createRow(rowNum++);
+
+                    int colNum = 0;
+                    dataRow.createCell(colNum++).setCellValue(u.getIdUser());
+                    dataRow.createCell(colNum++).setCellValue(u.getName());
+                    dataRow.createCell(colNum++).setCellValue(u.getMiddleName() != null ? u.getMiddleName() : "");
+                    dataRow.createCell(colNum++).setCellValue(u.getLastName());
+                    dataRow.createCell(colNum++).setCellValue(u.getLastName2() != null ? u.getLastName2() : "");
+                    dataRow.createCell(colNum++).setCellValue(u.getEmail());
+                    dataRow.createCell(colNum++).setCellValue(u.getPhoneNumber());
+                    dataRow.createCell(colNum++).setCellValue(u.getDocumento());
+                    dataRow.createCell(colNum++).setCellValue(u.getSexo() != null ? u.getSexo() : "");
+                }
+
+                // 5. Autoajustar
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // 6. Escribir el libro de trabajo en el stream y devolver ByteArrayInputStream
+                workbook.write(out);
+                return new ByteArrayInputStream(out.toByteArray());
+            } // El try-with-resources cierra el workbook y el ByteArrayOutputStream
 
         } catch (Exception e) {
-            throw new RuntimeException("Error generando Excel: " + e.getMessage());
+            throw new RuntimeException("Error generando el archivo Excel (.xlsx)", e);
         }
     }
 }
