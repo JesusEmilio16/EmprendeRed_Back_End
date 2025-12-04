@@ -6,8 +6,14 @@ import com.example.demo.service.BusinessService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/business")
@@ -92,5 +98,33 @@ public class BusinessController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
+    }
+
+    // --- NUEVOS ENDPOINTS DE EXPORTACIÓN ---
+
+    // 📥 Descargar Excel
+    @GetMapping("/export/excel")
+    public ResponseEntity<InputStreamResource> exportExcel() throws IOException {
+        ByteArrayInputStream in = service.generateExcel();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=emprendimientos.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(in));
+    }
+
+    // 📥 Descargar PDF
+    @GetMapping("/export/pdf")
+    public ResponseEntity<InputStreamResource> exportPdf() {
+        ByteArrayInputStream in = service.generatePdf();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=emprendimientos.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(in));
     }
 }
